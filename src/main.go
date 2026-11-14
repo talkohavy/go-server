@@ -10,9 +10,11 @@ import (
 func main() {
 	slog.Info("Starting server on port 8000")
 
-	http.HandleFunc("/", handleHello)
+	mux := http.NewServeMux()
 
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	mux.HandleFunc("/", handleHello)
+
+	log.Fatal(http.ListenAndServe(":8000", mux))
 	// This line here would never be reached!
 }
 
