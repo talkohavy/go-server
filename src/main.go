@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -20,7 +19,7 @@ func main() {
 }
 
 func handleHello(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("Incoming request!")
+	slog.Info("Incoming request!")
 
 	wc, error := res.Write([]byte("Hello, World!\n"))
 
@@ -29,7 +28,7 @@ func handleHello(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Printf("%d bytes written\n", wc)
+	slog.Debug("bytes written", "bytes", wc)
 }
 
 func handleHealthCheck(res http.ResponseWriter, req *http.Request) {
