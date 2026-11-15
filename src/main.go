@@ -26,6 +26,7 @@ func main() {
 	mux.HandleFunc("/", handleHello)
 	mux.HandleFunc("/health-check", handleHealthCheck)
 	mux.HandleFunc("/books", handleBooks)
+	mux.HandleFunc("/books/{bookId}", handleBook)
 
 	log.Fatal(http.ListenAndServe(":8000", mux))
 	// This line here would never be reached!
@@ -85,5 +86,26 @@ func handleBooks(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		slog.Error("Error writing books response", "error", err)
+	}
+}
+
+func handleBook(res http.ResponseWriter, req *http.Request) {
+	bookId := req.PathValue("bookId")
+
+	if bookId == "" {
+		res.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	slog.Info("[Book] Incoming request!", "bookId", bookId)
+
+	bookResponse := fmt.Sprintf("Book: %s\n", bookId)
+
+	res.WriteHeader(http.StatusOK)
+
+	_, err := res.Write([]byte(bookResponse))
+
+	if err != nil {
+		slog.Error("Error writing book response", "error", err)
 	}
 }
