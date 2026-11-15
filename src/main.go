@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"log/slog"
@@ -31,7 +32,7 @@ func main() {
 }
 
 func handleHello(res http.ResponseWriter, req *http.Request) {
-	slog.Info("Incoming request!")
+	slog.Info("[Hello] Incoming request!")
 
 	helloResponse := "Hello, World!\n"
 
@@ -62,13 +63,17 @@ func handleBooks(res http.ResponseWriter, req *http.Request) {
 
 	page := params.Get(QueryKeys.Page)
 	limit := params.Get(QueryKeys.Limit)
-	booksResponse := fmt.Sprintf("Books. Page: %s, Limit: %s", page, limit)
 
-	slog.Debug("books query", QueryKeys.Page, page, QueryKeys.Limit, limit)
+	slog.Info("[Books] Incoming request!", QueryKeys.Page, page, QueryKeys.Limit, limit)
+
+	var booksResponse bytes.Buffer
+	booksResponse.WriteString(fmt.Sprintf("Books. Page: %s, Limit: %s\n", page, limit))
+	booksResponse.WriteString("Another line.!\n")
+	booksResponse.WriteString("Done!\n")
 
 	res.WriteHeader(http.StatusOK)
 
-	_, err := res.Write([]byte(booksResponse))
+	_, err := res.Write(booksResponse.Bytes())
 
 	if err != nil {
 		slog.Error("Error writing books response", "error", err)

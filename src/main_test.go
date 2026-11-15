@@ -53,7 +53,7 @@ func TestHandleBooks(t *testing.T) {
 	actualCode := res.Code
 	expectedCode := http.StatusOK
 	actualResponse := res.Body.String()
-	expectedResponse := "Books. Page: 1, Limit: 10"
+	expectedResponse := "Books. Page: 1, Limit: 10\nAnother line.!\nDone!\n"
 
 	if actualCode != expectedCode {
 		t.Errorf("expected code %d, got %d\nBody: %s", expectedCode, actualCode, actualResponse)
