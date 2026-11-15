@@ -33,7 +33,9 @@ func main() {
 func handleHello(res http.ResponseWriter, req *http.Request) {
 	slog.Info("Incoming request!")
 
-	wc, error := res.Write([]byte("Hello, World!\n"))
+	helloResponse := "Hello, World!\n"
+
+	wc, error := res.Write([]byte(helloResponse))
 
 	if error != nil {
 		slog.Error("Error writing response", "error", error)
@@ -46,7 +48,9 @@ func handleHello(res http.ResponseWriter, req *http.Request) {
 func handleHealthCheck(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 
-	_, err := res.Write([]byte("OK"))
+	okResponse := "OK"
+
+	_, err := res.Write([]byte(okResponse))
 
 	if err != nil {
 		slog.Error("Error writing health check response", "error", err)
@@ -58,13 +62,13 @@ func handleBooks(res http.ResponseWriter, req *http.Request) {
 
 	page := params.Get(QueryKeys.Page)
 	limit := params.Get(QueryKeys.Limit)
-	answer := fmt.Sprintf("Books. Page: %s, Limit: %s", page, limit)
+	booksResponse := fmt.Sprintf("Books. Page: %s, Limit: %s", page, limit)
 
 	slog.Debug("books query", QueryKeys.Page, page, QueryKeys.Limit, limit)
 
 	res.WriteHeader(http.StatusOK)
 
-	_, err := res.Write([]byte(answer))
+	_, err := res.Write([]byte(booksResponse))
 
 	if err != nil {
 		slog.Error("Error writing books response", "error", err)
