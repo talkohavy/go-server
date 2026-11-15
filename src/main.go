@@ -23,7 +23,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", handleHello)
+	mux.HandleFunc("/{$}", handleHello) // <--- this value: "/" also acts as the fallback route when no other route is matched. To avoid this, you can set the value to "/{$}". This means an exact match of the root path.
 	mux.HandleFunc("/health-check", handleHealthCheck)
 	mux.HandleFunc("/books", handleBooks)
 	mux.HandleFunc("/books/{bookId}", handleBook)
