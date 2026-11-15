@@ -43,3 +43,23 @@ func TestHandleHealthCheck(t *testing.T) {
 		t.Errorf("expected body %s, got %s", expectedBody, actualBody)
 	}
 }
+
+func TestHandleBooks(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/books?page=1&limit=10", nil)
+	res := httptest.NewRecorder()
+
+	handleBooks(res, req)
+
+	actualCode := res.Code
+	expectedCode := http.StatusOK
+	actualResponse := res.Body.String()
+	expectedResponse := "Books. Page: 1, Limit: 10"
+
+	if actualCode != expectedCode {
+		t.Errorf("expected code %d, got %d\nBody: %s", expectedCode, actualCode, actualResponse)
+	}
+
+	if actualResponse != expectedResponse {
+		t.Errorf("expected body %s, got %s", expectedResponse, actualResponse)
+	}
+}
