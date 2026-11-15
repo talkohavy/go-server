@@ -64,6 +64,14 @@ func handleBooks(res http.ResponseWriter, req *http.Request) {
 	page := params.Get(QueryKeys.Page)
 	limit := params.Get(QueryKeys.Limit)
 
+	if page == "" {
+		page = "100"
+	}
+
+	if limit == "" {
+		limit = "10"
+	}
+
 	slog.Info("[Books] Incoming request!", QueryKeys.Page, page, QueryKeys.Limit, limit)
 
 	var booksResponse bytes.Buffer
