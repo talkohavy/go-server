@@ -30,6 +30,7 @@ func main() {
 	mux.HandleFunc("/health-check", handleHealthCheck)
 	mux.HandleFunc("/books", handleBooks)
 	mux.HandleFunc("/books/{bookId}", handleBook)
+	mux.HandleFunc("/api/login", handleLogin)
 
 	log.Fatal(http.ListenAndServe(":8000", mux))
 	// This line here would never be reached!
@@ -111,4 +112,34 @@ func handleBook(res Response, req Request) {
 	if err != nil {
 		slog.Error("Error writing book response", "error", err)
 	}
+}
+
+type UserData struct {
+	name  string
+	email string
+	age   int
+}
+
+func handleLogin(res Response, req Request) {
+	accessToken := req.Header.Get("cookie")
+
+	slog.Info("[Login] incoming request!")
+
+	if accessToken == "" {
+		slog.Error("[Login] missing access token")
+
+		http.Error(res, "access token required!", http.StatusBadRequest)
+
+		return
+	}
+
+	slog.Info("[Login]", "cookie", accessToken)
+
+	loginResponse := UserData{
+		name:  "asd",
+		email: "tal@gmail.com",
+		age:   30,
+	}
+
+	res.Write([]byte(loginResponse.email))
 }

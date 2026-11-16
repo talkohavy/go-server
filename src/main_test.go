@@ -63,3 +63,20 @@ func TestHandleBooks(t *testing.T) {
 		t.Errorf("expected body %s, got %s", expectedResponse, actualResponse)
 	}
 }
+
+func TestHandleLogin(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/api/login", nil)
+
+	req.Header.Set("cookie", "access_token=abcd")
+
+	res := httptest.NewRecorder()
+
+	handleLogin(res, req)
+
+	actualCode := res.Code
+	expectedCode := http.StatusOK
+
+	if actualCode != expectedCode {
+		t.Errorf("Expected code %d, got %d", expectedCode, actualCode)
+	}
+}
