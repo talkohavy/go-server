@@ -8,6 +8,9 @@ import (
 	"net/http"
 )
 
+type Response = http.ResponseWriter
+type Request = *http.Request
+
 type QueryKeysType struct {
 	Page  string
 	Limit string
@@ -32,7 +35,7 @@ func main() {
 	// This line here would never be reached!
 }
 
-func handleHello(res http.ResponseWriter, req *http.Request) {
+func handleHello(res Response, req Request) {
 	slog.Info("[Hello] Incoming request!")
 
 	helloResponse := "Hello, World!\n"
@@ -47,7 +50,7 @@ func handleHello(res http.ResponseWriter, req *http.Request) {
 	slog.Debug("bytes written", "bytes", wc)
 }
 
-func handleHealthCheck(res http.ResponseWriter, req *http.Request) {
+func handleHealthCheck(res Response, req Request) {
 	res.WriteHeader(http.StatusOK)
 
 	okResponse := "OK"
@@ -59,7 +62,7 @@ func handleHealthCheck(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func handleBooks(res http.ResponseWriter, req *http.Request) {
+func handleBooks(res Response, req Request) {
 	params := req.URL.Query()
 
 	page := params.Get(QueryKeys.Page)
@@ -89,7 +92,7 @@ func handleBooks(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func handleBook(res http.ResponseWriter, req *http.Request) {
+func handleBook(res Response, req Request) {
 	bookId := req.PathValue("bookId")
 
 	if bookId == "" {
