@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"log/slog"
 	"net/http"
@@ -115,31 +117,62 @@ func handleBook(res Response, req Request) {
 }
 
 type UserData struct {
-	name  string
-	email string
-	age   int
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Age   int    `json:"age"`
 }
 
 func handleLogin(res Response, req Request) {
+	slog.Info("[Login] incoming request!")
+
+	bodyRaw, err := io.ReadAll(req.Body)
+
+	if err != nil {
+		slog.Error("[Login] error reading body")
+
+		http.Error(res, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
+	var parsedBody UserData
+	err = json.Unmarshal(bodyRaw, &parsedBody)
+
+	if err != nil {
+		slog.Error("[Login] error parsing body")
+
+		http.Error(res, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
+	slog.Info("[Login]", "parsedBody", parsedBody)
+
 	accessToken := req.Header.Get("cookie")
 
-	slog.Info("[Login] incoming request!")
+	res.Header().Set("Content-Type", "application/json")
 
 	if accessToken == "" {
 		slog.Error("[Login] missing access token")
 
-		http.Error(res, "access token required!", http.StatusBadRequest)
-
+		http.Error(res, http.ErrNoCookie.Error(), http.StatusBadRequest)
 		return
 	}
 
 	slog.Info("[Login]", "cookie", accessToken)
 
-	loginResponse := UserData{
-		name:  "asd",
-		email: "tal@gmail.com",
-		age:   30,
+	userdata := UserData{
+		Name:  parsedBody.Name,
+		Email: parsedBody.Email,
+		Age:   parsedBody.Age + 10,
 	}
 
-	res.Write([]byte(loginResponse.email))
+	loginResponse, jsonError := json.Marshal(userdata)
+
+	if jsonError != nil {
+		http.Error(res, "bad json!", http.StatusInternalServerError)
+		return
+	}
+
+	slog.Info("[Login]", "user", userdata)
+
+	res.Write(loginResponse)
 }
