@@ -1,0 +1,11 @@
+{
+  "cursor.cpp.disabledLanguages": [
+    "go"
+    // "markdown",
+    // "plaintext",
+    // "javascript",
+    // "javascriptreact",
+    // "typescript",
+    // "typescriptreact"
+  ]
+}
