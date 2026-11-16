@@ -80,3 +80,18 @@ func TestHandleLogin(t *testing.T) {
 		t.Errorf("Expected code %d, got %d", expectedCode, actualCode)
 	}
 }
+
+func TestHandleLoginWithoutACookie(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/api/login", nil)
+
+	res := httptest.NewRecorder()
+
+	handleLogin(res, req)
+
+	actualCode := res.Code
+	expectedCode := http.StatusBadRequest
+
+	if actualCode != expectedCode {
+		t.Errorf("Expected code %d, got %d", expectedCode, actualCode)
+	}
+}
